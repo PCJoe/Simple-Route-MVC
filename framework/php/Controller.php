@@ -21,7 +21,21 @@
 		
 		public function runApp()
 		{
-			include("../app_api/global/php/View.php");
 			View::get("dashboard/main");
+		}
+		
+		static function get($controller)
+		{
+			// if the user has include the php extension - remove it
+			if(substr($controller, -4) == ".php")
+				$controller = substr($view, 0, -4);
+			
+			// if they have used . for dirextory pathing change it
+			$controller = str_replace(".", "/", $controller);
+			
+			// built the view path
+			$path = $GLOBALS["ActiveRoute"]["AppPath"]."/_module/".$GLOBALS["ActiveRoute"]["AppModule"]."/controller/".$controller;
+			
+			include_once($path.".php");
 		}
 	}

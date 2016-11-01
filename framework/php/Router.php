@@ -6,6 +6,7 @@
 		private $_uriParam;			// any paramaters pased through the URI
 		private $_methodValues;		// any paramaters passed though the HTTP
 		private $_httpRequest;		// any paramaters passed though the Header
+		static $devMode = false;	// this is to either show the correct error page or display the route
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		// @__construct - feeds all data into the properties of this object from the $_SERVER
@@ -75,9 +76,9 @@
 		// @param @string - the name of the app. Which will match the directory name with the prefix of app_
 		// @return @object - hand over the conection to the relevent app
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
-		public function startApp($name)
+		public function startApp()
 		{
-			include_once("../app_".$name."/Launch.php");
+			include_once($GLOBALS["ActiveRoute"]["AppPath"]."/Launch.php");
 			$launch = new Launch($this->getFullRoute());
 			$launch->launchApp();
 		}
@@ -124,5 +125,33 @@
 		public function getHttp()
 		{
 			return $this->_httpRequest;
+		}
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		// @return @bool - Return true if $method is set eg GET, POST, PUT, DELETE
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		static function is($method)
+		{
+			return (isset($GLOBALS['ActiveRoute']['method'][$method]))?true:false;
+		}
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		// @return @bool - Return true if worked
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		static function setModule($module)
+		{
+			$GLOBALS["ActiveRoute"]["route"][0][1] = $module;
+			$GLOBALS["ActiveRoute"]["AppModule"] = $module;
+			return true;
+		}
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		// @return @bool - Return true if worked
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		static function setController($controller)
+		{
+			$GLOBALS["ActiveRoute"]["route"][0][2] = $controller;
+			$GLOBALS["ActiveRoute"]["AppController"] = $controller;
+			return true;
 		}
 	}

@@ -5,7 +5,8 @@
 	// get the view data model
 	$model = array(
 		"data1" => Data::getModel(),
-		"data2" => test\Data2::getModel()
+		"data2" => test\Data2::getModel(),
+		"data3" => Car::getModel()
 	);
 	
 	// get the view and parse the model
