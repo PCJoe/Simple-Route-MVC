@@ -128,6 +128,53 @@
 		}
 		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		// @return @array - check if an alias route is being used
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		public function alias($routes = array())
+		{
+			// set the routes
+			include_once("../framework/routes.php");
+			
+			// collect the cuurent route
+			$currentRoute = $this->getRoute()[0];
+			$routeVar = array();
+			
+			if(count($routes)>0)
+			{				
+				foreach($routes as $route)
+				{
+					if($this->_uriMethod == $route['method'])
+					{
+						$alias = explode('/', $route['alias']);
+						if(count($alias) == count($currentRoute))
+						{
+							$match = true;
+							foreach($alias as $key=>$alia)
+							{
+								if(strstr($alia, "{"))
+								{
+									$var = str_replace(array('{','}'), '', $alia);
+									$routeVar[$var] = $currentRoute[$key];
+								}
+								elseif($alia != $currentRoute[$key])
+								{
+									$match = false;
+								}
+							}
+
+							if($match)
+							{
+								$this->_uriArray = array(array_merge(explode('/', $route['route']), $routeVar));
+								$GLOBALS["ActiveRoute"] = $this->getFullRoute();
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		// @return @bool - Return true if $method is set eg GET, POST, PUT, DELETE
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		static function is($method)
@@ -153,5 +200,23 @@
 			$GLOBALS["ActiveRoute"]["route"][0][2] = $controller;
 			$GLOBALS["ActiveRoute"]["AppController"] = $controller;
 			return true;
+		}
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		// @return @array - display in a pintr the current route array
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		static function get()
+		{
+			return $GLOBALS["ActiveRoute"];
+		}
+		
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		// @return @array - display in a pintr the current route array
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		static function show()
+		{
+			echo "<pre>";
+			print_r(self::get());
+			echo "<pre>";
 		}
 	}

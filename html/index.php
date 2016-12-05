@@ -12,11 +12,14 @@
 	include_once("../framework/autoloader.php");
 	
 	// uncomment this to enable dev mode - which will return the route array and any other dev messages for troubleshooting
-	// Router::$devMode = true;
+	//Router::$devMode = true;
 	
 	// create dynamic routing object
 	$router = new Router();
 	$GLOBALS["ActiveRoute"] = $router->getFullRoute();
+	
+	// check the route mapping
+	//$router->alias();
 	
 	// main route teirs, there will always be 3 routes eg. "app"/"module"/"controller"
 	// if any teirs are missing the name from the previous teir as copied across eg. if only example is used then the route will be "example"/"example"/"example"
@@ -30,7 +33,7 @@
 	// this creates some quick referance layers in the global array
 	$GLOBALS["ActiveRoute"]["AppPath"] = "../app_".$GLOBALS["ActiveRoute"]["route"][0][0];
 	$GLOBALS["ActiveRoute"]["AppModule"] = $GLOBALS["ActiveRoute"]["route"][0][1];
-	$GLOBALS["ActiveRoute"]["AppController"] = $GLOBALS["ActiveRoute"]["route"][0][1];
+	$GLOBALS["ActiveRoute"]["AppController"] = $GLOBALS["ActiveRoute"]["route"][0][2];
 	
 	// path to the app launcher
 	$launcher = $GLOBALS["ActiveRoute"]["AppPath"]."/Launch.php";
